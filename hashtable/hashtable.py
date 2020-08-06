@@ -22,7 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.head = None
+        self.tail = None
 
     def get_num_slots(self):
         """
@@ -35,6 +37,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #change return value put it there to git rid of error.
+        return 1
 
 
     def get_load_factor(self):
@@ -63,6 +67,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for x in key:
+            new_hash = ((hash << 5) + hash) + x
+        return new_hash
 
 
     def hash_index(self, key):
@@ -82,6 +90,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #hash key
+        hashed_key = self.hash_index(key)
+        #create a new entry
+        new_entry = HashTableEntry(hashed_key, value)
+        #check head and tail if both are none set the entry to both head and tail.
+        if self.head is None and self.tail is None:
+            self.head = new_entry
+            self.tail = new_entry
+        #otherwise set the tails next value to the new entry and then set new entry as tail
+        else:
+            self.tail.next = new_entry
+            self.tail = new_entry
 
 
     def delete(self, key):
@@ -93,6 +113,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #hash the key
+        #loop through keys 
+        #if hashed key is not found print warning
+        #if hashed key is found set value to none
 
 
     def get(self, key):
@@ -104,6 +128,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #hash key 
+        #loop through keys
+        #if key is found return the keys value 
+        #else return none
+
 
 
     def resize(self, new_capacity):
