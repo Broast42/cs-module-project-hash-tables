@@ -148,7 +148,7 @@ class HashTable:
                 return current.value
             current = current.next
         # if while loop runs with no returns return none
-        return none
+        return None
 
 
     def resize(self, new_capacity):
