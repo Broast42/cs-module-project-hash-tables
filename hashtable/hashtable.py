@@ -20,7 +20,7 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
         self.capacity = capacity
         self.head = None
@@ -69,7 +69,7 @@ class HashTable:
         # Your code here
         hash = 5381
         for x in key:
-            new_hash = ((hash << 5) + hash) + x
+            new_hash = ((hash << 5) + hash) + ord(x)
         return new_hash
 
 
@@ -98,8 +98,18 @@ class HashTable:
         if self.head is None and self.tail is None:
             self.head = new_entry
             self.tail = new_entry
+            return
+        #loop throuh to see if key already exists and if so update the value 
+        current = self.head
+        found = False
+        while current is not None:
+            if current.key == hashed_key:
+                current.value = value
+                found = True
+                return
+            current = current.next
         #otherwise set the tails next value to the new entry and then set new entry as tail
-        else:
+        if found is False:
             self.tail.next = new_entry
             self.tail = new_entry
 
@@ -142,7 +152,7 @@ class HashTable:
         hashed_key = self.hash_index(key)
         #loop through keys
         current = self.head
-        while current is not None and found is False:
+        while current is not None:
             #if key is found return the keys value 
             if current.key == hashed_key:
                 return current.value
