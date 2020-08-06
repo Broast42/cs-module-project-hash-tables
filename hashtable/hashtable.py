@@ -114,9 +114,19 @@ class HashTable:
         """
         # Your code here
         #hash the key
+        hashed_key = self.hash_index(key)
         #loop through keys 
+        current = self.head
+        found = False
+        while current is not None and found is False:
+            #if hashed key is found set value to none
+            if current.key == hashed_key:
+                current.value = None
+                found = True
+            current = current.next
         #if hashed key is not found print warning
-        #if hashed key is found set value to none
+        if found is False:
+            print("Key is not Found")
 
 
     def get(self, key):
@@ -129,10 +139,16 @@ class HashTable:
         """
         # Your code here
         #hash key 
+        hashed_key = self.hash_index(key)
         #loop through keys
-        #if key is found return the keys value 
-        #else return none
-
+        current = self.head
+        while current is not None and found is False:
+            #if key is found return the keys value 
+            if current.key == hashed_key:
+                return current.value
+            current = current.next
+        # if while loop runs with no returns return none
+        return none
 
 
     def resize(self, new_capacity):
