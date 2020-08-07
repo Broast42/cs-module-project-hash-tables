@@ -7,6 +7,62 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+class List:
+    def __init__(self):
+        self.head = None
+    
+    def add(self, key, value):
+        new_entry = HashTableEntry(key, value)
+        current = self.head
+        if self.head is None:
+            self.head = new_entry
+            return
+        while current is not None:
+            if current.key == key:
+                current.value = value
+                return
+            current = current.next
+        
+        new_entry.next = self.head
+        self.head = new_entry
+    
+    def get(self, key):
+        current = self.head
+        if self.head is None:
+            return None
+        while current is not None:
+            if current.key == key:
+                return current.value
+            current = current.next
+        
+        return None
+
+    def delete(self, key):
+        current = self.head
+        previous = None
+
+        if self.head is None:
+            return None
+        
+        while current is not None:
+            if current.key == key:
+                #if there is only one item in the list
+                if previous is None and current.next is None:
+                    self.head = None
+                    return current.value
+                #if we are at the first item and there is more than 1 item in the list
+                elif previous is None:
+                    self.head = current.next
+                    return current.value
+                #if we are at n place in the list and there is a prveous node
+                else:
+                    previous.next = current.next
+                    return current.value
+            previous = current
+            current = current.next
+        
+        return None
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -23,8 +79,10 @@ class HashTable:
     def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
         self.capacity = capacity
-        self.head = None
-        self.tail = None
+        
+        
+        # self.head = None
+        # self.tail = None
 
     def get_num_slots(self):
         """
@@ -90,28 +148,30 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        #hash key
-        hashed_key = self.hash_index(key)
-        #create a new entry
-        new_entry = HashTableEntry(hashed_key, value)
-        #check head and tail if both are none set the entry to both head and tail.
-        if self.head is None and self.tail is None:
-            self.head = new_entry
-            self.tail = new_entry
-            return
-        #loop throuh to see if key already exists and if so update the value 
-        current = self.head
-        found = False
-        while current is not None:
-            if current.key == hashed_key:
-                current.value = value
-                found = True
-                return
-            current = current.next
-        #otherwise set the tails next value to the new entry and then set new entry as tail
-        if found is False:
-            self.tail.next = new_entry
-            self.tail = new_entry
+
+        #wrong implementation need a seperate linked list keep for referance
+        # #hash key
+        # hashed_key = self.hash_index(key)
+        # #create a new entry
+        # new_entry = HashTableEntry(hashed_key, value)
+        # #check head and tail if both are none set the entry to both head and tail.
+        # if self.head is None and self.tail is None:
+        #     self.head = new_entry
+        #     self.tail = new_entry
+        #     return
+        # #loop throuh to see if key already exists and if so update the value 
+        # current = self.head
+        # found = False
+        # while current is not None:
+        #     if current.key == hashed_key:
+        #         current.value = value
+        #         found = True
+        #         return
+        #     current = current.next
+        # #otherwise set the tails next value to the new entry and then set new entry as tail
+        # if found is False:
+        #     self.tail.next = new_entry
+        #     self.tail = new_entry
 
 
     def delete(self, key):
@@ -123,20 +183,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        #hash the key
-        hashed_key = self.hash_index(key)
-        #loop through keys 
-        current = self.head
-        found = False
-        while current is not None and found is False:
-            #if hashed key is found set value to none
-            if current.key == hashed_key:
-                current.value = None
-                found = True
-            current = current.next
-        #if hashed key is not found print warning
-        if found is False:
-            print("Key is not Found")
+        
+        
+        # #hash the key
+        # hashed_key = self.hash_index(key)
+        # #loop through keys 
+        # current = self.head
+        # found = False
+        # while current is not None and found is False:
+        #     #if hashed key is found set value to none
+        #     if current.key == hashed_key:
+        #         current.value = None
+        #         found = True
+        #     current = current.next
+        # #if hashed key is not found print warning
+        # if found is False:
+        #     print("Key is not Found")
 
 
     def get(self, key):
@@ -148,17 +210,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        #hash key 
-        hashed_key = self.hash_index(key)
-        #loop through keys
-        current = self.head
-        while current is not None:
-            #if key is found return the keys value 
-            if current.key == hashed_key:
-                return current.value
-            current = current.next
-        # if while loop runs with no returns return none
-        return None
+        
+        
+        # #hash key 
+        # hashed_key = self.hash_index(key)
+        # #loop through keys
+        # current = self.head
+        # while current is not None:
+        #     #if key is found return the keys value 
+        #     if current.key == hashed_key:
+        #         return current.value
+        #     current = current.next
+        # # if while loop runs with no returns return none
+        # return None
 
 
     def resize(self, new_capacity):
