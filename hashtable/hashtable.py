@@ -8,23 +8,25 @@ class HashTableEntry:
         self.next = None
 
 class List:
-    def __init__(self):
-        self.head = None
+    def __init__(self, head=None):
+        self.head = head
     
+    #returns True if an entry was updated
     def add(self, key, value):
         new_entry = HashTableEntry(key, value)
         current = self.head
         if self.head is None:
             self.head = new_entry
-            return
+            return False
         while current is not None:
             if current.key == key:
                 current.value = value
-                return
+                return True
             current = current.next
         
         new_entry.next = self.head
         self.head = new_entry
+        return False
     
     def get(self, key):
         current = self.head
@@ -79,10 +81,8 @@ class HashTable:
     def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
         self.capacity = capacity
-        
-        
-        # self.head = None
-        # self.tail = None
+        self.table = [None] * capacity
+        self.entry_count = 0
 
     def get_num_slots(self):
         """
@@ -149,6 +149,22 @@ class HashTable:
         """
         # Your code here
 
+        #hash key
+        i = self.hash_index(key)
+        #check if table index at hashed key is None if so 
+        
+        if self.table[i] is None:
+            # create a List passing in a hastableEntry with the key and value
+            self.table[i] = List(HashTableEntry(key, value))
+            #increment the count
+            self.entry_count += 1
+        #else use the hashed key index and add the key value pair
+        else:
+            new_entry = self.table[i].add(key,value)
+            #if add function returns false increment the count
+            if new_entry == False:
+                self.entry_count += 1
+
         #wrong implementation need a seperate linked list keep for referance
         # #hash key
         # hashed_key = self.hash_index(key)
@@ -183,7 +199,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        
+        #hash key
+        i = self.hash_index(key)
+        found = True
+        #if table index at hashed key is None return none print not found error
+        if self.table[i] is None:
+            found = False
+        #else call delete on the list at hashed index
+        else:
+            deleted = self.table[i].delete(key)
+            #if delete returns none print not found error else decrement count
+            if deleted is None:
+                found = False
+            if found is False:
+                print("Key is not Found")
+            else:
+                 # decrement count
+                self.entry_count -= 1
         
         # #hash the key
         # hashed_key = self.hash_index(key)
@@ -210,8 +242,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        
-        
+        #hash key 
+        i = self.hash_index(key)
+        #if table at hashed key is None return None
+        if self.table[i] is None:
+            return None
+        #else call get on list at table index of hash key return get value
+        else:
+            return self.table[i].get(key)
+
+
         # #hash key 
         # hashed_key = self.hash_index(key)
         # #loop through keys
