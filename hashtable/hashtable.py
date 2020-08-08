@@ -172,7 +172,8 @@ class HashTable:
         if self.get_load_factor() > 0.7:
             self.resize(self.capacity * 2)
             #call resize(capacity * 2)
-
+        elif self.get_load_factor() < 0.2:
+            self.resize(round(self.capacity / 2))
 
     def delete(self, key):
         """
@@ -229,10 +230,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        #double the capacity by using new_capacity doubled capacity must be passed in
-        self.capacity = new_capacity
+        
+        if new_capacity < 8:
+            self.capacity = 8
+        else:
+            self.capacity = new_capacity
+        
         #make a new table array that is length of now updated capacity
-        new_table = [None] * new_capacity
+        new_table = [None] * self.capacity
         #loop through original table
         for i in range(len(self.table)): 
             #if entry is not none
@@ -251,12 +256,10 @@ class HashTable:
                     #else take the list at hashed key index and add(key,value)
                     else:
                         new_table[hashed_key].add(current.key, current.value)
-
-
                     #set head to next
                     current = current.next 
         #set table to new table
-        self.table = new_table  
+        self.table = new_table
 
 
 
