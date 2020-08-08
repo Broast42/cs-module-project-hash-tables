@@ -96,7 +96,7 @@ class HashTable:
         """
         # Your code here
         #change return value put it there to git rid of error.
-        return 1
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -106,6 +106,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        lf = self.entry_count/self.capacity
+        return lf
 
 
     def fnv1(self, key):
@@ -164,6 +166,12 @@ class HashTable:
             #if add function returns false increment the count
             if new_entry == False:
                 self.entry_count += 1
+        
+        #check the load factor
+        #if load factor is greater than 0.7
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+            #call resize(capacity * 2)
 
 
     def delete(self, key):
@@ -221,6 +229,34 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #double the capacity by using new_capacity doubled capacity must be passed in
+        self.capacity = new_capacity
+        #make a new table array that is length of now updated capacity
+        new_table = [None] * new_capacity
+        #loop through original table
+        for i in range(len(self.table)): 
+            #if entry is not none
+            if self.table[i] is not None:
+                #var that is the lists head node
+                current = self.table[i].head
+                #loop through the list
+                while current is not None:
+                    #var hash the nodes key
+                    hashed_key = self.hash_index(current.key)
+                    #if new table at hash key index is none
+                    if new_table[hashed_key] is None:
+                        #create a list initalised with hashTabelEntry key, value
+                         # at new table index of hashed key
+                        new_table[hashed_key] = List(HashTableEntry(current.key, current.value))   
+                    #else take the list at hashed key index and add(key,value)
+                    else:
+                        new_table[hashed_key].add(current.key, current.value)
+
+
+                    #set head to next
+                    current = current.next 
+        #set table to new table
+        self.table = new_table  
 
 
 
