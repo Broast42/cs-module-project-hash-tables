@@ -1,5 +1,22 @@
 def no_dups(s):
     # Your code here
+    if s == "":
+        return ""
+    #split the string into words
+    slist = s.split(' ')
+    #create new string
+    new_s = ''
+    #loop through list    
+    for i in range(len(slist)):
+        #if new string does not contain the word
+        if slist[i] not in new_s:
+            if i == 0:
+                #join a string of the element to new string
+                new_s += "".join(str(slist[i]))
+            else:
+                new_s += "".join(' ' + str(slist[i]))
+    return new_s
+   
 
 
 

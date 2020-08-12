@@ -173,7 +173,7 @@ class HashTable:
             self.resize(self.capacity * 2)
             #call resize(capacity * 2)
         elif self.get_load_factor() < 0.2:
-            self.resize(round(self.capacity / 2))
+            self.resize(self.capacity // 2)
 
     def delete(self, key):
         """
