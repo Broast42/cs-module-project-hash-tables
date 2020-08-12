@@ -10,6 +10,8 @@ def slowfun_too_slow(x, y):
 
     return v
 
+cache = {}
+
 
 def slowfun(x, y):
     """
@@ -17,7 +19,19 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
-    
+    #check cache to see if result is stored
+    if (x,y) in cache:
+        #if so return the value
+        return cache[(x,y)]
+    else:
+    #if not calculate the problem and store it in the cache
+        v = math.pow(x, y)
+        v = math.factorial(v)
+        v //= (x + y)
+        v %= 982451653
+
+        cache[(x,y)] = v
+        return v
 
 
 
@@ -27,3 +41,4 @@ for i in range(50000):
     x = random.randrange(2, 14)
     y = random.randrange(3, 6)
     print(f'{i}: {x},{y}: {slowfun(x, y)}')
+
