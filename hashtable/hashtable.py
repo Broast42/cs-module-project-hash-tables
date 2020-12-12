@@ -7,6 +7,64 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+class List:
+    def __init__(self, head=None):
+        self.head = head
+    
+    #returns True if an entry was updated
+    def add(self, key, value):
+        new_entry = HashTableEntry(key, value)
+        current = self.head
+        if self.head is None:
+            self.head = new_entry
+            return False
+        while current is not None:
+            if current.key == key:
+                current.value = value
+                return True
+            current = current.next
+        
+        new_entry.next = self.head
+        self.head = new_entry
+        return False
+    
+    def get(self, key):
+        current = self.head
+        if self.head is None:
+            return None
+        while current is not None:
+            if current.key == key:
+                return current.value
+            current = current.next
+        
+        return None
+
+    def delete(self, key):
+        current = self.head
+        previous = None
+
+        if self.head is None:
+            return None
+        
+        while current is not None:
+            if current.key == key:
+                #if there is only one item in the list
+                if previous is None and current.next is None:
+                    self.head = None
+                    return current.value
+                #if we are at the first item and there is more than 1 item in the list
+                elif previous is None:
+                    self.head = current.next
+                    return current.value
+                #if we are at n place in the list and there is a prveous node
+                else:
+                    previous.next = current.next
+                    return current.value
+            previous = current
+            current = current.next
+        
+        return None
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -20,9 +78,11 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
-
+        self.capacity = capacity
+        self.table = [None] * capacity
+        self.entry_count = 0
 
     def get_num_slots(self):
         """
@@ -35,6 +95,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #change return value put it there to git rid of error.
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,6 +106,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        lf = self.entry_count/self.capacity
+        return lf
 
 
     def fnv1(self, key):
@@ -63,6 +127,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for x in key:
+            new_hash = ((hash << 5) + hash) + ord(x)
+        return new_hash
 
 
     def hash_index(self, key):
@@ -83,6 +151,29 @@ class HashTable:
         """
         # Your code here
 
+        #hash key
+        i = self.hash_index(key)
+        #check if table index at hashed key is None if so 
+        
+        if self.table[i] is None:
+            # create a List passing in a hastableEntry with the key and value
+            self.table[i] = List(HashTableEntry(key, value))
+            #increment the count
+            self.entry_count += 1
+        #else use the hashed key index and add the key value pair
+        else:
+            new_entry = self.table[i].add(key,value)
+            #if add function returns false increment the count
+            if new_entry == False:
+                self.entry_count += 1
+        
+        #check the load factor
+        #if load factor is greater than 0.7
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+            #call resize(capacity * 2)
+        elif self.get_load_factor() < 0.2:
+            self.resize(self.capacity // 2)
 
     def delete(self, key):
         """
@@ -93,6 +184,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #hash key
+        i = self.hash_index(key)
+        found = True
+        #if table index at hashed key is None return none print not found error
+        if self.table[i] is None:
+            found = False
+        #else call delete on the list at hashed index
+        else:
+            deleted = self.table[i].delete(key)
+            #if delete returns none print not found error else decrement count
+            if deleted is None:
+                found = False
+            if found is False:
+                print("Key is not Found")
+            else:
+                 # decrement count
+                self.entry_count -= 1
 
 
     def get(self, key):
@@ -104,6 +212,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #hash key 
+        i = self.hash_index(key)
+        #if table at hashed key is None return None
+        if self.table[i] is None:
+            return None
+        #else call get on list at table index of hash key return get value
+        else:
+            return self.table[i].get(key)
 
 
     def resize(self, new_capacity):
@@ -114,6 +230,36 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
+        if new_capacity < 8:
+            self.capacity = 8
+        else:
+            self.capacity = new_capacity
+        
+        #make a new table array that is length of now updated capacity
+        new_table = [None] * self.capacity
+        #loop through original table
+        for i in range(len(self.table)): 
+            #if entry is not none
+            if self.table[i] is not None:
+                #var that is the lists head node
+                current = self.table[i].head
+                #loop through the list
+                while current is not None:
+                    #var hash the nodes key
+                    hashed_key = self.hash_index(current.key)
+                    #if new table at hash key index is none
+                    if new_table[hashed_key] is None:
+                        #create a list initalised with hashTabelEntry key, value
+                         # at new table index of hashed key
+                        new_table[hashed_key] = List(HashTableEntry(current.key, current.value))   
+                    #else take the list at hashed key index and add(key,value)
+                    else:
+                        new_table[hashed_key].add(current.key, current.value)
+                    #set head to next
+                    current = current.next 
+        #set table to new table
+        self.table = new_table
 
 
 
